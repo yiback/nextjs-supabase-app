@@ -3,6 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 언어 및 커뮤니케이션 규칙
+
 - 기본 응답 언어: 한국어
 - 코드 주석: 한국어로 작성
 - 커밋 메시지: 한국어로 작성
@@ -21,6 +22,7 @@ npm run lint     # ESLint 실행
 ## 환경변수
 
 `.env.local` 파일에 필수:
+
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase 프로젝트 URL
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` - Supabase publishable/anon 키
 
@@ -31,6 +33,7 @@ Next.js App Router 기반 프로젝트로, Supabase 인증을 쿠키 기반 세�
 ### Supabase 클라이언트 설정 (lib/supabase/)
 
 세 가지 컨텍스트별 Supabase 클라이언트:
+
 - `client.ts` - 클라이언트 컴포넌트용 브라우저 클라이언트 (`createBrowserClient` 사용)
 - `server.ts` - Server Components, Route Handlers, Server Actions용 서버 클라이언트 (`createServerClient` + 쿠키 처리)
 - `proxy.ts` - 미들웨어용 클라이언트, `updateSession()`으로 세션 갱신 및 미인증 사용자를 `/auth/login`으로 리다이렉트
@@ -52,6 +55,7 @@ Next.js App Router 기반 프로젝트로, Supabase 인증을 쿠키 기반 세�
 shadcn/ui (new-york 스타일) + Tailwind CSS 사용. 컴포넌트는 `components/ui/`에 위치. 클래스 병합 시 `lib/utils.ts`의 `cn()` 유틸리티 사용.
 
 shadcn 컴포넌트 추가:
+
 ```bash
 npx shadcn@latest add <component-name>
 ```

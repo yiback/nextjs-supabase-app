@@ -14,7 +14,7 @@ export function UserAvatar({ user, size = 'md' }) {
       <AvatarImage src={user.avatar} alt={user.name} />
       <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
     </Avatar>
-  )
+  );
 }
 
 export function UserStatus({ isOnline }) {
@@ -25,7 +25,7 @@ export function UserStatus({ isOnline }) {
         isOnline ? 'bg-green-500' : 'bg-gray-400'
       )}
     />
-  )
+  );
 }
 
 // ❌ 여러 책임이 섞인 컴포넌트
@@ -74,11 +74,11 @@ class UserCard extends BaseCard { ... }
 
 ```tsx
 // ✅ Server Component (데이터 패칭, SEO 중요)
-import { Suspense } from 'react'
+import { Suspense } from 'react';
 
 export default async function UserListPage() {
   // 서버에서 데이터 패칭
-  const users = await getUsers()
+  const users = await getUsers();
 
   return (
     <div>
@@ -87,44 +87,44 @@ export default async function UserListPage() {
         <UserList users={users} />
       </Suspense>
     </div>
-  )
+  );
 }
 
 // 서버 컴포넌트에서 서버 전용 유틸리티 사용 가능
 async function UserList({ users }) {
   return (
     <div className="grid gap-4">
-      {users.map(user => (
+      {users.map((user) => (
         <UserCard key={user.id} user={user} />
       ))}
     </div>
-  )
+  );
 }
 ```
 
 ### Client Components ('use client' 필요)
 
 ```tsx
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useActionState } from 'react'
+import { useState, useEffect } from 'react';
+import { useActionState } from 'react';
 
 // ✅ Client Component (상호작용, 상태 관리)
 export function UserSearchForm() {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
 
   return (
     <div>
       <input
         value={query}
-        onChange={e => setQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder="사용자 검색..."
       />
       <SearchResults results={results} />
     </div>
-  )
+  );
 }
 
 // ✅ React 19 useActionState 활용
@@ -132,7 +132,7 @@ export function UserForm() {
   const [state, formAction, isPending] = useActionState(updateUserAction, {
     success: false,
     message: '',
-  })
+  });
 
   return (
     <form action={formAction}>
@@ -142,7 +142,7 @@ export function UserForm() {
       </button>
       {state.message && <p>{state.message}</p>}
     </form>
-  )
+  );
 }
 ```
 
@@ -151,7 +151,7 @@ export function UserForm() {
 ```tsx
 // ✅ 적절한 경계 설정
 export default async function ProductPage({ params }) {
-  const product = await getProduct(params.id) // 서버에서 데이터 패칭
+  const product = await getProduct(params.id); // 서버에서 데이터 패칭
 
   return (
     <div>
@@ -162,13 +162,13 @@ export default async function ProductPage({ params }) {
       {/* 클라이언트 컴포넌트 영역 */}
       <ProductInteractions productId={product.id} />
     </div>
-  )
+  );
 }
 
 // 클라이언트 컴포넌트는 별도 파일로 분리
-;('use client')
+('use client');
 export function ProductInteractions({ productId }) {
-  const [liked, setLiked] = useState(false)
+  const [liked, setLiked] = useState(false);
   // 상호작용 로직...
 }
 ```
@@ -180,19 +180,19 @@ export function ProductInteractions({ productId }) {
 ```tsx
 // ✅ 명확한 Props 타입 정의
 interface ButtonProps {
-  children: React.ReactNode
+  children: React.ReactNode;
   variant?:
     | 'default'
     | 'destructive'
     | 'outline'
     | 'secondary'
     | 'ghost'
-    | 'link'
-  size?: 'default' | 'sm' | 'lg' | 'icon'
-  disabled?: boolean
-  loading?: boolean
-  onClick?: () => void
-  className?: string
+    | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  disabled?: boolean;
+  loading?: boolean;
+  onClick?: () => void;
+  className?: string;
 }
 
 export function Button({
@@ -215,7 +215,7 @@ export function Button({
       {loading ? <Spinner className="mr-2" /> : null}
       {children}
     </button>
-  )
+  );
 }
 ```
 
@@ -260,37 +260,37 @@ export function Text<T extends React.ElementType = 'p'>({
 ```tsx
 // ✅ Render Props 패턴
 interface DataFetcherProps<T> {
-  url: string
+  url: string;
   children: (
     data: T | null,
     loading: boolean,
     error: Error | null
-  ) => React.ReactNode
+  ) => React.ReactNode;
 }
 
 export function DataFetcher<T>({ url, children }: DataFetcherProps<T>) {
-  const [data, setData] = useState<T | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     fetchData(url)
       .then(setData)
       .catch(setError)
-      .finally(() => setLoading(false))
-  }, [url])
+      .finally(() => setLoading(false));
+  }, [url]);
 
-  return children(data, loading, error)
+  return children(data, loading, error);
 }
 
 // 사용법
-;<DataFetcher<User[]> url="/api/users">
+<DataFetcher<User[]> url="/api/users">
   {(users, loading, error) => {
-    if (loading) return <Spinner />
-    if (error) return <ErrorMessage error={error} />
-    return <UserList users={users || []} />
+    if (loading) return <Spinner />;
+    if (error) return <ErrorMessage error={error} />;
+    return <UserList users={users || []} />;
   }}
-</DataFetcher>
+</DataFetcher>;
 ```
 
 ## 🔄 재사용성 패턴
@@ -298,7 +298,7 @@ export function DataFetcher<T>({ url, children }: DataFetcherProps<T>) {
 ### 1. 컴포넌트 변형 (Variants)
 
 ```tsx
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ✅ CVA로 변형 정의
 const cardVariants = cva(
@@ -321,11 +321,11 @@ const cardVariants = cva(
       size: 'md',
     },
   }
-)
+);
 
 interface CardProps extends VariantProps<typeof cardVariants> {
-  children: React.ReactNode
-  className?: string
+  children: React.ReactNode;
+  className?: string;
 }
 
 export function Card({
@@ -339,7 +339,7 @@ export function Card({
     <div className={cn(cardVariants({ variant, size }), className)} {...props}>
       {children}
     </div>
-  )
+  );
 }
 ```
 
@@ -348,64 +348,64 @@ export function Card({
 ```tsx
 // ✅ 컴파운드 컴포넌트 패턴
 interface AccordionContextType {
-  openItems: Set<string>
-  toggle: (value: string) => void
+  openItems: Set<string>;
+  toggle: (value: string) => void;
 }
 
-const AccordionContext = createContext<AccordionContextType | null>(null)
+const AccordionContext = createContext<AccordionContextType | null>(null);
 
 export function Accordion({ children, type = 'single' }) {
-  const [openItems, setOpenItems] = useState<Set<string>>(new Set())
+  const [openItems, setOpenItems] = useState<Set<string>>(new Set());
 
   const toggle = (value: string) => {
-    setOpenItems(prev => {
-      const newSet = new Set(prev)
+    setOpenItems((prev) => {
+      const newSet = new Set(prev);
       if (newSet.has(value)) {
-        newSet.delete(value)
+        newSet.delete(value);
       } else {
         if (type === 'single') {
-          newSet.clear()
+          newSet.clear();
         }
-        newSet.add(value)
+        newSet.add(value);
       }
-      return newSet
-    })
-  }
+      return newSet;
+    });
+  };
 
   return (
     <AccordionContext.Provider value={{ openItems, toggle }}>
       <div className="accordion">{children}</div>
     </AccordionContext.Provider>
-  )
+  );
 }
 
 export function AccordionItem({ value, children }) {
-  return <div data-value={value}>{children}</div>
+  return <div data-value={value}>{children}</div>;
 }
 
 export function AccordionTrigger({ children, value }) {
-  const { toggle } = useContext(AccordionContext)
+  const { toggle } = useContext(AccordionContext);
   return (
     <button onClick={() => toggle(value)} className="accordion-trigger">
       {children}
     </button>
-  )
+  );
 }
 
 export function AccordionContent({ children, value }) {
-  const { openItems } = useContext(AccordionContext)
-  const isOpen = openItems.has(value)
+  const { openItems } = useContext(AccordionContext);
+  const isOpen = openItems.has(value);
 
-  return isOpen ? <div className="accordion-content">{children}</div> : null
+  return isOpen ? <div className="accordion-content">{children}</div> : null;
 }
 
 // 사용법
-;<Accordion type="multiple">
+<Accordion type="multiple">
   <AccordionItem value="item-1">
     <AccordionTrigger value="item-1">질문 1</AccordionTrigger>
     <AccordionContent value="item-1">답변 1</AccordionContent>
   </AccordionItem>
-</Accordion>
+</Accordion>;
 ```
 
 ## ⚡ 성능 최적화 패턴
@@ -413,50 +413,50 @@ export function AccordionContent({ children, value }) {
 ### 1. 메모이제이션
 
 ```tsx
-import { memo, useMemo, useCallback } from 'react'
+import { memo, useMemo, useCallback } from 'react';
 
 // ✅ React.memo로 불필요한 리렌더링 방지
 export const ExpensiveComponent = memo(function ExpensiveComponent({
   data,
   onUpdate,
 }: {
-  data: ComplexData[]
-  onUpdate: (id: string) => void
+  data: ComplexData[];
+  onUpdate: (id: string) => void;
 }) {
   // 복잡한 계산을 메모이제이션
   const processedData = useMemo(() => {
-    return data.map(item => ({
+    return data.map((item) => ({
       ...item,
       calculated: expensiveCalculation(item),
-    }))
-  }, [data])
+    }));
+  }, [data]);
 
   // 콜백 함수 메모이제이션
   const handleUpdate = useCallback(
     (id: string) => {
-      onUpdate(id)
+      onUpdate(id);
     },
     [onUpdate]
-  )
+  );
 
   return (
     <div>
-      {processedData.map(item => (
+      {processedData.map((item) => (
         <ExpensiveItem key={item.id} item={item} onUpdate={handleUpdate} />
       ))}
     </div>
-  )
-})
+  );
+});
 ```
 
 ### 2. 지연 로딩 (Lazy Loading)
 
 ```tsx
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react';
 
 // ✅ 동적 import로 코드 분할
-const HeavyComponent = lazy(() => import('./HeavyComponent'))
-const Chart = lazy(() => import('@/components/charts/Chart'))
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+const Chart = lazy(() => import('@/components/charts/Chart'));
 
 export function Dashboard() {
   return (
@@ -471,7 +471,7 @@ export function Dashboard() {
         <HeavyComponent />
       </Suspense>
     </div>
-  )
+  );
 }
 ```
 
@@ -479,12 +479,12 @@ export function Dashboard() {
 
 ```tsx
 // ✅ 큰 리스트 가상화
-import { FixedSizeList as List } from 'react-window'
+import { FixedSizeList as List } from 'react-window';
 
 interface VirtualizedListProps {
-  items: any[]
-  itemHeight: number
-  height: number
+  items: any[];
+  itemHeight: number;
+  height: number;
 }
 
 export function VirtualizedList({
@@ -496,13 +496,13 @@ export function VirtualizedList({
     <div style={style}>
       <ListItem item={items[index]} />
     </div>
-  )
+  );
 
   return (
     <List height={height} itemCount={items.length} itemSize={itemHeight}>
       {Row}
     </List>
-  )
+  );
 }
 ```
 
@@ -513,12 +513,12 @@ export function VirtualizedList({
 ```tsx
 // ✅ 타입 안전한 제네릭 컴포넌트
 interface SelectProps<T> {
-  options: T[]
-  value?: T
-  onChange: (value: T) => void
-  getLabel: (option: T) => string
-  getValue: (option: T) => string
-  className?: string
+  options: T[];
+  value?: T;
+  onChange: (value: T) => void;
+  getLabel: (option: T) => string;
+  getValue: (option: T) => string;
+  className?: string;
 }
 
 export function Select<T>({
@@ -532,31 +532,31 @@ export function Select<T>({
   return (
     <select
       value={value ? getValue(value) : ''}
-      onChange={e => {
+      onChange={(e) => {
         const selectedValue = options.find(
-          option => getValue(option) === e.target.value
-        )
-        if (selectedValue) onChange(selectedValue)
+          (option) => getValue(option) === e.target.value
+        );
+        if (selectedValue) onChange(selectedValue);
       }}
       className={className}
     >
-      {options.map(option => (
+      {options.map((option) => (
         <option key={getValue(option)} value={getValue(option)}>
           {getLabel(option)}
         </option>
       ))}
     </select>
-  )
+  );
 }
 
 // 사용법 (완전한 타입 추론)
-;<Select<User>
+<Select<User>
   options={users}
   value={selectedUser}
   onChange={setSelectedUser}
-  getLabel={user => user.name}
-  getValue={user => user.id}
-/>
+  getLabel={(user) => user.name}
+  getValue={(user) => user.id}
+/>;
 ```
 
 ### 2. 조건부 타입
@@ -564,14 +564,14 @@ export function Select<T>({
 ```tsx
 // ✅ 조건부 props 타입
 type ButtonProps<T extends boolean = false> = {
-  children: React.ReactNode
-  loading?: T
+  children: React.ReactNode;
+  loading?: T;
 } & (T extends true
   ? { onClick?: never; disabled?: boolean }
-  : { onClick: () => void; disabled?: boolean })
+  : { onClick: () => void; disabled?: boolean });
 
 export function Button<T extends boolean = false>(props: ButtonProps<T>) {
-  const { children, loading, onClick, disabled, ...restProps } = props
+  const { children, loading, onClick, disabled, ...restProps } = props;
 
   return (
     <button
@@ -581,7 +581,7 @@ export function Button<T extends boolean = false>(props: ButtonProps<T>) {
     >
       {loading ? <Spinner /> : children}
     </button>
-  )
+  );
 }
 ```
 
@@ -592,25 +592,25 @@ export function Button<T extends boolean = false>(props: ButtonProps<T>) {
 ```tsx
 // ✅ 커스텀 훅으로 로직 분리
 function useToggle(initialValue: boolean = false) {
-  const [value, setValue] = useState(initialValue)
+  const [value, setValue] = useState(initialValue);
 
-  const toggle = useCallback(() => setValue(prev => !prev), [])
-  const setTrue = useCallback(() => setValue(true), [])
-  const setFalse = useCallback(() => setValue(false), [])
+  const toggle = useCallback(() => setValue((prev) => !prev), []);
+  const setTrue = useCallback(() => setValue(true), []);
+  const setFalse = useCallback(() => setValue(false), []);
 
-  return { value, toggle, setTrue, setFalse, setValue }
+  return { value, toggle, setTrue, setFalse, setValue };
 }
 
 // 컴포넌트에서 사용
 export function Modal({ children }) {
-  const { value: isOpen, setTrue: open, setFalse: close } = useToggle()
+  const { value: isOpen, setTrue: open, setFalse: close } = useToggle();
 
   return (
     <>
       <button onClick={open}>모달 열기</button>
       {isOpen && <Dialog onClose={close}>{children}</Dialog>}
     </>
-  )
+  );
 }
 ```
 
@@ -619,15 +619,15 @@ export function Modal({ children }) {
 ```tsx
 // ✅ 복잡한 상태 관리
 interface CartState {
-  items: CartItem[]
-  total: number
+  items: CartItem[];
+  total: number;
 }
 
 type CartAction =
   | { type: 'ADD_ITEM'; payload: CartItem }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
-  | { type: 'CLEAR_CART' }
+  | { type: 'CLEAR_CART' };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
@@ -636,34 +636,34 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         ...state,
         items: [...state.items, action.payload],
         total: calculateTotal([...state.items, action.payload]),
-      }
+      };
     // 다른 케이스들...
     default:
-      return state
+      return state;
   }
 }
 
 const CartContext = createContext<{
-  state: CartState
-  dispatch: Dispatch<CartAction>
-} | null>(null)
+  state: CartState;
+  dispatch: Dispatch<CartAction>;
+} | null>(null);
 
 export function CartProvider({ children }) {
-  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 })
+  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 });
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>
       {children}
     </CartContext.Provider>
-  )
+  );
 }
 
 export function useCart() {
-  const context = useContext(CartContext)
+  const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart must be used within CartProvider')
+    throw new Error('useCart must be used within CartProvider');
   }
-  return context
+  return context;
 }
 ```
 
@@ -690,25 +690,25 @@ function OverloadedComponent({
 
 // 깊은 props drilling
 function App() {
-  const user = useUser()
-  return <Level1 user={user} />
+  const user = useUser();
+  return <Level1 user={user} />;
 }
 function Level1({ user }) {
-  return <Level2 user={user} />
+  return <Level2 user={user} />;
 }
 function Level2({ user }) {
-  return <Level3 user={user} />
+  return <Level3 user={user} />;
 }
 
 // 거대한 컴포넌트
 function GiantComponent() {
   // 500줄 이상의 JSX와 로직
-  return <div>{/* 엄청난 양의 JSX */}</div>
+  return <div>{/* 엄청난 양의 JSX */}</div>;
 }
 
 // 불필요한 래핑
 function UnnecessaryWrapper({ children }) {
-  return <div>{children}</div> // 의미 없는 div
+  return <div>{children}</div>; // 의미 없는 div
 }
 
 // 인라인 객체/함수 생성
@@ -718,7 +718,7 @@ function BadComponent() {
       config={{ option: 'value' }} // 매 렌더링마다 새 객체
       onUpdate={() => {}} // 매 렌더링마다 새 함수
     />
-  )
+  );
 }
 ```
 
